@@ -1,0 +1,39 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+
+def create_directed_graph():
+    G = nx.DiGraph()
+    
+    # Nodes (Stages of Processing)
+    G.add_node("Raw EEG Data (.bin)", color='gray')
+    G.add_node("Read Binary EEG (read_binary_eeg)", color='red')
+    G.add_node("Slice EEG Data (slice_eeg)", color='red')
+    G.add_node("Processed Data (.csv)", color='gray')
+    G.add_node("Behavioral Data (.csv)", color='gray')
+    G.add_node("Compute Averages (Mean Slicing)", color='red')
+    G.add_node("Generate Figures (Matplotlib)", color='red')
+    G.add_node("Save Figures (.png)", color='gray')
+    G.add_node("Statistical Analysis", color='red')
+    
+    # Edges (Data Flow)
+    G.add_edges_from([
+        ("Raw EEG Data (.bin)", "Read Binary EEG (read_binary_eeg)"),
+        ("Read Binary EEG (read_binary_eeg)", "Slice EEG Data (slice_eeg)"),
+        ("Slice EEG Data (slice_eeg)", "Processed Data (.csv)"),
+        ("Processed Data (.csv)", "Compute Averages (Mean Slicing)"),
+        ("Compute Averages (Mean Slicing)", "Generate Figures (Matplotlib)"),
+        ("Processed Data (.csv)", "Statistical Analysis"),
+        ("Behavioral Data (.csv)", "Statistical Analysis"),
+        ("Generate Figures (Matplotlib)", "Save Figures (.png)"),
+    ])
+    
+    # Draw the Graph
+    plt.figure(figsize=(10, 6))
+    pos = nx.spring_layout(G)
+    colors = [G.nodes[n]['color'] for n in G.nodes]
+    nx.draw(G, pos, with_labels=True, node_color=colors, edge_color='red', node_size=3000, font_size=9, font_weight='bold')
+    plt.title("EEG Data Processing Pipeline")
+    plt.show()
+
+# Generate Graph
+create_directed_graph()
